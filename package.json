@@ -1,0 +1,12 @@
+{
+  "name": "netxray",
+  "version": "1.0.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "start": "node netxray.js",
+    "demo": "node netxray.js --demo",
+    "test": "node --test"
+  }
+}
