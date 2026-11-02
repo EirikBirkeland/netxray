@@ -63,7 +63,6 @@ function fetchUrl(url, { timeoutMs, onFirstByte }) {
 export function startProbes(state) {
   const timers = [];
   const every = (ms, task) => timers.push(setInterval(task, ms));
-  const resolver = new dns.promises.Resolver({ timeout: PROBE_TIMEOUT_MS, tries: 1 });
   let carrierPending = false;
   let pingMissingLogged = false;
 
@@ -96,10 +95,12 @@ export function startProbes(state) {
   }
 
   // A fresh name every time, so the answer has to travel past any cache. "No such name" is still an answer.
+  // A fresh resolver too: one keeps the DNS servers it found when created, which are dead after a network switch.
   async function probeDns() {
     const probe = beginProbe(state, 'dns', Date.now());
     const startedAt = performance.now();
     const name = `nx${Math.random().toString(36).slice(2, 12)}.example.com`;
+    const resolver = new dns.promises.Resolver({ timeout: PROBE_TIMEOUT_MS, tries: 1 });
     let rtt = null;
     try {
       await resolver.resolve4(name);
